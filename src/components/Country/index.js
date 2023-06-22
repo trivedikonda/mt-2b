@@ -2,15 +2,9 @@ import {Component} from 'react'
 import './index.css'
 
 class Country extends Component {
-  onHandleClick = () => {
-    const {addCountry, countryDetails} = this.props
-    const {id} = countryDetails
-    addCountry(id)
-  }
-
   render() {
-    const {countryDetails} = this.props
-    const {name, isVisited} = countryDetails
+    const {countryDetails, addCountry} = this.props
+    const {name, isVisited, id} = countryDetails
     return (
       <li>
         <div>
@@ -19,7 +13,12 @@ class Country extends Component {
           {isVisited ? (
             <p>Visited</p>
           ) : (
-            <button type="button" onClick={this.onHandleClick}>
+            <button
+              type="button"
+              onClick={() => {
+                addCountry(id)
+              }}
+            >
               Visit
             </button>
           )}
