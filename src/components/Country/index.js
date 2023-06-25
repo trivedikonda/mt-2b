@@ -3,7 +3,7 @@ import './index.css'
 
 class Country extends Component {
   render() {
-    const {countryDetails, addCountry} = this.props
+    const {countryDetails, visitCountry} = this.props
     const {name, isVisited, id} = countryDetails
     return (
       <li>
@@ -16,7 +16,7 @@ class Country extends Component {
             <button
               type="button"
               onClick={() => {
-                addCountry(id)
+                visitCountry(id)
               }}
             >
               Visit
