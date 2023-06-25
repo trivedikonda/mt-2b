@@ -79,44 +79,59 @@ const initialCountriesList = [
   },
 ]
 
-const alreadyVisitedCountriesList = initialCountriesList.filter(
-  each => each.isVisited === true,
-)
-
-// console.log(alreadyVisitedCountriesList)
-
 class VisitCountries extends Component {
   state = {
     countriesList: initialCountriesList,
-    visitedCountriesList: alreadyVisitedCountriesList,
-    removedCountry: '',
+    visitedCountriesList: initialCountriesList.filter(
+      each => each.isVisited === true,
+    ),
   }
 
-  removeCountry = id => {
-    const {visitedCountriesList, removedCountry} = this.state
-    // const removed = visitedCountriesList.filter(r => r.id === id)
-    console.log(removedCountry)
+  visitCountry = countryID => {
+    const {countriesList} = this.state
+
+    const matchedCountry = countriesList.filter(e => e.id === countryID)
+    console.log(matchedCountry[0])
+    const visitedCountry = {
+      id: matchedCountry[0].id,
+      name: matchedCountry[0].name,
+      imageUrl: matchedCountry[0].imageUrl,
+      isVisited: matchedCountry[0].isVisited,
+    }
+
+    // console.log(visitedCountry)
+
+    const updatedCountries = countriesList.map(country => {
+      if (country.id === countryID) {
+        return {...country, isVisited: !country.isVisited}
+      }
+      return country
+    })
+
+    this.setState(prev => ({
+      visitedCountriesList: [...prev.visitedCountriesList, visitedCountry],
+      countriesList: updatedCountries,
+    }))
+  }
+
+  removeCountry = removedId => {
+    const {visitedCountriesList, countriesList} = this.state
+
     const filteredVisitedCountriesList = visitedCountriesList.filter(
-      e => e.id !== id,
+      e => e.id !== removedId,
     )
+
+    const updatedCountries = countriesList.map(each => {
+      if (each.id === removedId) {
+        return {...each, isVisited: !each.isVisited}
+      }
+      return each
+    })
+
     this.setState({
+      countriesList: updatedCountries,
       visitedCountriesList: filteredVisitedCountriesList,
     })
-  }
-
-  addCountry = countryID => {
-    const {countriesList} = this.state
-    const getCountry = countriesList.filter(e => e.id === countryID)
-    console.log(getCountry[0])
-    const newCountry = {
-      id: getCountry[0].id,
-      name: getCountry[0].name,
-      imageUrl: getCountry[0].imageUrl,
-      isVisited: !getCountry[0].isVisited,
-    }
-    this.setState(prevState => ({
-      visitedCountriesList: [...prevState.visitedCountriesList, newCountry],
-    }))
   }
 
   renderResults = () => {
@@ -127,7 +142,7 @@ class VisitCountries extends Component {
         {visitedCountriesList.map(country => (
           <VisitedCountry
             visitedCountryDetails={country}
-            key={country.name}
+            key={country.id}
             removeCountry={this.removeCountry}
           />
         ))}
@@ -141,7 +156,6 @@ class VisitCountries extends Component {
 
   render() {
     const {countriesList} = this.state
-    // console.log(countriesList)
     return (
       <div>
         <div className="countries-container">
@@ -151,7 +165,7 @@ class VisitCountries extends Component {
               <Country
                 countryDetails={eachCountry}
                 key={eachCountry.id}
-                addCountry={this.addCountry}
+                visitCountry={this.visitCountry}
               />
             ))}
           </ul>
